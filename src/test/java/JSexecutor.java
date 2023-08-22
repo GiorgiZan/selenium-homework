@@ -4,6 +4,8 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
@@ -15,9 +17,15 @@ public class JSexecutor {
 
     @BeforeClass
     public void beforeClass() {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        // ამითაც მუშაობს ყველაფერი გარდა moveToElement-ისა
+//        WebDriverManager.chromedriver().setup();
+//        ChromeOptions options = new ChromeOptions();
+//        options.addArguments("headless");
+//        driver = new ChromeDriver(options);
+
+        //აქ HtmlUnitDriver გამოვიყენე, რომ moveToElement-ზე იმუშავოს (მადლობა მირიანს სლაკში რჩევისთვის)
+        driver = new HtmlUnitDriver(true);
+
     }
 
     @Test
@@ -56,7 +64,7 @@ public class JSexecutor {
 
 
     }
-        @AfterTest
+    @AfterTest
     public void afterClass() {
         driver.quit();
     }
