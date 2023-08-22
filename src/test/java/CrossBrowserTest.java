@@ -1,22 +1,31 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-public class Exceptions {
+public class CrossBrowserTest {
     WebDriver driver;
-    @BeforeClass
-    public void beforeClass() {
-        WebDriverManager.chromedriver().setup();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("headless");
-        driver = new ChromeDriver(options);
 
+    @BeforeTest
+    @Parameters("browser")
+    public void setup(String browser) throws Exception{
+        if(browser.equalsIgnoreCase("Chrome")) {
+            WebDriverManager.chromedriver().setup();
+            driver = new ChromeDriver();
+        }
+        else if(browser.equalsIgnoreCase("Edge")) {
+            WebDriverManager.edgedriver().setup();
+            driver = new EdgeDriver();
+        }
+        else {
+            throw new Exception("Wrong browser");
+        }
     }
 
 
@@ -31,9 +40,9 @@ public class Exceptions {
             System.out.println("TimeoutException INVOKED AND CAUGHT");
         }
 
-        //Avoid NoAlertPresentException რომ ეწერა ვიფიქრე რომ try-ს კოდს არ უნდა გაესროლა Exception, თუ არასწორედ მივხდი და აქაც უნდა გაგვესროლა NoAlertPresentException მაშინ უბრალოდ მოვშლით ერთ ხაზს (ქვემოთ მოვნიშნე რომელი) და შემდეგ ჩვენი catch დაიჭერს.
+        //აქ იყო ძველი კომენტარი
         try {
-            new WebDriverWait(driver,5).until(ExpectedConditions.alertIsPresent()); //ეს
+            new WebDriverWait(driver,5).until(ExpectedConditions.alertIsPresent());
             driver.switchTo().alert().accept();
         } catch (NoAlertPresentException e) {
             System.out.println("NoAlertPresentException CAUGHT");
@@ -56,3 +65,6 @@ public class Exceptions {
         driver.quit();
     }
 }
+
+
+
